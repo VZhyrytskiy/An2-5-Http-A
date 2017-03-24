@@ -9,7 +9,8 @@ import {
   TaskComponent,
   TaskFormComponent,
   TaskArrayService,
-  TaskPromiseService
+  TaskPromiseService,
+  TaskObservableService
 } from '.';
 
 
@@ -26,7 +27,8 @@ import {
   ],
   providers: [
     TaskArrayService,
-    TaskPromiseService
+    TaskPromiseService,
+    TaskObservableService
   ]
 })
 export class TasksModule {}

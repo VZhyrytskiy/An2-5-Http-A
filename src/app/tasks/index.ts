@@ -1,5 +1,6 @@
 export * from './services/task-array.service';
 export * from './services/task-promise.service';
+export * from './services/task-observable.service';
 
 export * from './task/task.component';
 export * from './task-form/task-form.component';
