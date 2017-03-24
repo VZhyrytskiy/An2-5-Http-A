@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Task } from './../../models/task';
-import { TaskArrayService } from './../services/task-array.service';
-import { TaskPromiseService } from './..';
+import { TaskPromiseService, TaskObservableService } from './..';
 
 @Component({
   selector: 'task-form',
@@ -13,11 +12,11 @@ import { TaskPromiseService } from './..';
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
   task: Task;
-  private sub: Subscription;
+  private sub: Subscription[] = [];
 
   constructor(
-    private tasksService: TaskArrayService,
     private tasksPromiseService: TaskPromiseService,
+    private tasksObservableService: TaskObservableService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -25,20 +24,27 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.task = new Task(null, '', null, null);
 
-    this.sub = this.route.params.subscribe(params => {
-      let id = +params['id'];
+    const sub = this.route.params.subscribe(params => {
+      const id = +params['id'];
 
       // NaN - for new task, id - for edit
       if (id) {
-        this.tasksPromiseService.getTask(id)
-          .then(task => this.task = Object.assign({}, task))
-          .catch((err) => console.log(err));
+        // this.tasksPromiseService.getTask(id)
+        //   .then(task => this.task = Object.assign({}, task))
+        //   .catch((err) => console.log(err));
+        const s = this.tasksObservableService.getTask(id)
+          .subscribe(
+            task => this.task = Object.assign({}, task),
+            err => console.log(err)
+          );
+        this.sub.push(s);
       }
     });
+    this.sub.push(sub);
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.sub.forEach(sub => sub.unsubscribe());
   }
 
   saveTask() {

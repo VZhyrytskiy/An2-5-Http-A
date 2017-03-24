@@ -21,7 +21,9 @@ export class TaskObservableService {
   }
 
   getTask(id: number) {
-
+     return this.http.get(`${this.tasksUrl}/${id}`)
+            .map( this.handleData )
+            .catch(this.handleError);
   }
 
   updateTask(task: Task) {
