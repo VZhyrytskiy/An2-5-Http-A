@@ -52,8 +52,12 @@ export class TaskObservableService {
       .catch(this.handleError);
   }
 
-  deleteTask(task: Task) {
+  deleteTask(task: Task): Observable<Task> {
+    const url = `${this.tasksUrl}/${task.id}`;
 
+    return this.http.delete(url)
+      .map(response => <Task>response.json())
+      .catch(this.handleError);
   }
 
   private handleData(response: Response) {
