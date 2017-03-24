@@ -43,8 +43,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   completeTask(task: Task): void {
     task.done = true;
-    this.tasksService.updateTask(task);
-    
+    const sub = this.taskObservableService.updateTask(task)
+      .subscribe(
+        null,
+        err => console.log(err));
+    this.sub.push(sub);
   }
 
   deleteTask(task: Task) {
