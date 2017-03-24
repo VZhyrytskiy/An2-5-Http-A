@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Task } from './../../models/task';
-import { TaskPromiseService, TaskObservableService } from './..';
+import { TaskObservableService } from './..';
 
 @Component({
   selector: 'task-form',
@@ -15,7 +15,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   private sub: Subscription[] = [];
 
   constructor(
-    private tasksPromiseService: TaskPromiseService,
     private tasksObservableService: TaskObservableService,
     private router: Router,
     private route: ActivatedRoute
@@ -56,8 +55,12 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     );
 
     const method = task.id ? 'updateTask' : 'createTask';
-    this.tasksPromiseService[method](task)
-      .then(() => this.goBack());
+    const sub = this.tasksObservableService[method](task)
+      .subscribe(
+        () => this.goBack(),
+        err => console.log(err)
+      );
+    this.sub.push(sub);
   }
 
   goBack(): void {

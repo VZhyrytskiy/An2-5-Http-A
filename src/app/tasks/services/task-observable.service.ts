@@ -12,26 +12,44 @@ export class TaskObservableService {
 
   constructor(
     private http: Http
-  ) {}
+  ) { }
 
   getTasks(): Observable<Task[]> {
     return this.http.get(this.tasksUrl)
-            .map( this.handleData )
-            .catch( this.handleError );
+      .map(this.handleData)
+      .catch(this.handleError);
   }
 
   getTask(id: number) {
-     return this.http.get(`${this.tasksUrl}/${id}`)
-            .map( this.handleData )
-            .catch(this.handleError);
+    return this.http.get(`${this.tasksUrl}/${id}`)
+      .map(this.handleData)
+      .catch(this.handleError);
   }
 
-  updateTask(task: Task) {
+  updateTask(task: Task): Observable<Task> {
+    const url = `${this.tasksUrl}/${task.id}`,
+      body = JSON.stringify(task),
+      headers = new Headers({ 'Content-Type': 'application/json' }),
+      options = new RequestOptions();
 
+    options.headers = headers;
+
+    return this.http.put(url, body, options)
+      .map(this.handleData)
+      .catch(this.handleError);
   }
 
-  createTask(task: Task) {
+  createTask(task: Task): Observable<Task> {
+    const url = this.tasksUrl,
+      body = JSON.stringify(task),
+      headers = new Headers({ 'Content-Type': 'application/json' }),
+      options = new RequestOptions();
 
+    options.headers = headers;
+
+    return this.http.post(url, body, options)
+      .map(this.handleData)
+      .catch(this.handleError);
   }
 
   deleteTask(task: Task) {
@@ -45,10 +63,10 @@ export class TaskObservableService {
 
   private handleError(error: any) {
     const errMsg = (error.message)
-                    ? error.message
-                    : error.status
-                        ? `${error.status} - ${error.statusText}`
-                        : 'Server error';
+      ? error.message
+      : error.status
+        ? `${error.status} - ${error.statusText}`
+        : 'Server error';
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
