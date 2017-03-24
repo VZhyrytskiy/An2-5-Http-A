@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from './../../rxjs-extensions';
 
 import { Task } from './../../models/task';
-import { TaskPromiseService, TaskObservableService } from './../';
+import { TaskObservableService } from './../';
 
 @Component({
   selector: 'task-list',
@@ -16,7 +16,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   private sub: Subscription[] = [];
 
   constructor(
-    private tasksService: TaskPromiseService,
     private taskObservableService: TaskObservableService,
     private router: Router
   ) { }
@@ -51,11 +50,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   deleteTask(task: Task) {
-    this.tasksService.deleteTask(task)
-      .then(() => this.tasks = this.tasks.filter(t => t !== task))
-      .catch(err => console.log(err));
-
-    this.
+    // this.tasksService.deleteTask(task)
+    //   .then(() => this.tasks = this.tasks.filter(t => t !== task))
+    //   .catch(err => console.log(err));
+    const sub = this.taskObservableService.deleteTask(task)
+      .subscribe(
+      () => this.tasks = this.tasks.filter(t => t !== task),
+      err => console.log(err)
+      );
+    this.sub.push(sub);
   }
 
 }
