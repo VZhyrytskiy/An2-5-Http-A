@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { Subscription } from './../../rxjs-extensions';
 
 import { Task } from './../../models/task';
-import { TaskPromiseService, TaskObservableService } from './../';
+import { TaskArrayService, TaskPromiseService, TaskObservableService } from './../';
 
 @Component({
-  selector: 'task-list',
   templateUrl: 'task-list.component.html',
   styleUrls: ['task-list.component.css']
 })
@@ -16,10 +15,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   private sub: Subscription[] = [];
 
   constructor(
-    private tasksService: TaskPromiseService,
-    private taskObservableService: TaskObservableService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private taskArrayService: TaskArrayService,
+    private taskPromiseService: TaskPromiseService,
+    private taskObservableService: TaskObservableService)
+  { }
 
   ngOnInit() {
     const sub = this.taskObservableService.getTasks()
@@ -31,7 +31,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.forEach(sub => sub.unsubscribe());
+    this.sub.forEach(s => s.unsubscribe());
   }
 
 
@@ -43,11 +43,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   completeTask(task: Task): void {
     task.done = true;
-    this.tasksService.updateTask(task);
+    this.taskPromiseService.updateTask(task);
   }
 
   deleteTask(task: Task) {
-    this.tasksService.deleteTask(task)
+    this.taskPromiseService.deleteTask(task)
       .then(() => this.tasks = this.tasks.filter(t => t !== task))
       .catch(err => console.log(err));
   }

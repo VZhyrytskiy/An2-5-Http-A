@@ -1,6 +1,12 @@
 {
   "tasks": [
     {
+      "id": 1,
+      "action": "Estimate",
+      "priority": 1,
+      "estHours": 8
+    },
+    {
       "id": 2,
       "action": "Create",
       "priority": 2,
@@ -29,14 +35,23 @@
       "action": "Deploy",
       "priority": 2,
       "estHours": 8
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Anna",
+      "lastName": "Borisova"
     },
     {
-      "id": 7,
-      "action": "_T",
-      "priority": 1,
-      "estHours": 6,
-      "actHours": 0,
-      "done": false
+      "id": 2,
+      "firstName": "Boris",
+      "lastName": "Vlasov"
+    },
+    {
+      "id": 3,
+      "firstName": "Gennadiy",
+      "lastName": "Dmitriev"
     }
   ]
 }
