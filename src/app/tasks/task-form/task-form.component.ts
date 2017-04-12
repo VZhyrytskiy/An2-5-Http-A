@@ -12,7 +12,6 @@ import { TaskArrayService, TaskPromiseService, TaskObservableService } from './.
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
   task: Task;
-  private sub: Subscription[] = [];
 
   constructor(
     private taskArrayService: TaskArrayService,
@@ -28,7 +27,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     // it is not necessary to save subscription to route.params
     // it handles automatically
     this.route.params
-      .switchMap((params: Params) => this.tasksObservableService.getTask(+params['id']))
+      .switchMap((params: Params) => this.taskObservableService.getTask(+params['id']))
       .subscribe(
         task => this.task = Object.assign({}, task),
         err => console.log(err)
