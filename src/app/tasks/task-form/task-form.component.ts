@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
 
 import { Task } from './../../models/task';
-import { TaskArrayService, TaskPromiseService, TaskObservableService } from './..';
+import { TaskObservableService } from './..';
 
 @Component({
   templateUrl: 'task-form.component.html',
@@ -17,8 +17,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   private sub: Subscription[] = [];
 
   constructor(
-    private taskArrayService: TaskArrayService,
-    private taskPromiseService: TaskPromiseService,
     private taskObservableService: TaskObservableService,
     private router: Router,
     private route: ActivatedRoute
