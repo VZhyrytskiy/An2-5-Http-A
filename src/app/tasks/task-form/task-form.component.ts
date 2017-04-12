@@ -1,21 +1,23 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
+
+import 'rxjs/add/operator/switchMap';
 
 import { Task } from './../../models/task';
 import { TaskObservableService } from './..';
 
 @Component({
-  selector: 'task-form',
   templateUrl: 'task-form.component.html',
   styleUrls: ['task-form.component.css']
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
   task: Task;
+
   private sub: Subscription[] = [];
 
   constructor(
-    private tasksObservableService: TaskObservableService,
+    private taskObservableService: TaskObservableService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -23,31 +25,22 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.task = new Task(null, '', null, null);
 
-    const sub = this.route.params.subscribe(params => {
-      const id = +params['id'];
+    // it is not necessary to save subscription to route.params
+    // it handles automatically
+    this.route.params
+      .switchMap((params: Params) => this.taskObservableService.getTask(+params['id']))
+      .subscribe(
+        task => this.task = Object.assign({}, task),
+        err => console.log(err)
+    );
 
-      // NaN - for new task, id - for edit
-      if (id) {
-        // this.tasksPromiseService.getTask(id)
-        //   .then(task => this.task = Object.assign({}, task))
-        //   .catch((err) => console.log(err));
-        const s = this.tasksObservableService.getTask(id)
-          .subscribe(
-            task => this.task = Object.assign({}, task),
-            err => console.log(err)
-          );
-        this.sub.push(s);
-      }
-    });
-    this.sub.push(sub);
   }
 
   ngOnDestroy(): void {
-    this.sub.forEach(sub => sub.unsubscribe());
   }
 
   saveTask() {
-    let task = new Task(
+    const task = new Task(
       this.task.id,
       this.task.action,
       this.task.priority,
@@ -55,7 +48,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     );
 
     const method = task.id ? 'updateTask' : 'createTask';
-    const sub = this.tasksObservableService[method](task)
+    const sub = this.taskObservableService[method](task)
       .subscribe(
         () => this.goBack(),
         err => console.log(err)
@@ -64,6 +57,6 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    this.router.navigate(['home']);
+    this.router.navigate(['/home']);
   }
 }

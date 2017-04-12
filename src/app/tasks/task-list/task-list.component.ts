@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from './../../rxjs-extensions';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Task } from './../../models/task';
 import { TaskObservableService } from './../';
 
 @Component({
-  selector: 'task-list',
   templateUrl: 'task-list.component.html',
   styleUrls: ['task-list.component.css']
 })
@@ -30,7 +29,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.sub.forEach(sub => sub.unsubscribe());
+    this.sub.forEach(s => s.unsubscribe());
   }
 
 
@@ -50,9 +49,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   deleteTask(task: Task) {
-    // this.tasksService.deleteTask(task)
-    //   .then(() => this.tasks = this.tasks.filter(t => t !== task))
-    //   .catch(err => console.log(err));
     const sub = this.taskObservableService.deleteTask(task)
       .subscribe(
       () => this.tasks = this.tasks.filter(t => t !== task),

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
-import './../../rxjs-extensions';
+import './../../services/rxjs-extensions';
 
 import { Task } from './../../models/task';
 

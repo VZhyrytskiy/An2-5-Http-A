@@ -21,12 +21,12 @@ export class TaskComponent {
     this.onComplete.emit(this.task);
   }
 
-  deleteTask(task: Task) {
-    this.onDelete.emit(task);
+  deleteTask() {
+    this.onDelete.emit(this.task);
   }
 
-  editTask(task: Task) {
-    let link = ['edit', task.id];
+  editTask() {
+    const link = ['/edit', this.task.id];
     this.router.navigate(link);
   }
 }
